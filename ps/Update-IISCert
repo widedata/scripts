@@ -1,0 +1,34 @@
+install-module chocolatey
+install-chocolateysoftware
+choco install openssl
+Install-Module OpenSSL
+Install-Module WebAdministration
+
+
+$WorkingFolder = "C:\temp\"
+$RenewedCRTFile =  "mypfxkey.crt"
+$PrivateKeyFile = "mypfxkey.pem"
+$RenewedPFXFile = "renewed-cert.pfx"
+$CurrentPFXFile = "mypfx.pfx"
+$password = "S0m3th1ng!"
+
+# Convert the password to a secure string
+$SecurePassword = (ConvertTo-SecureString -String $password -Force -AsPlainText) 
+
+# Get the thumbprint of the old certificate
+$OldThumbprint = (Get-ChildItem -Path IIS:SSLBindings | Where-Object -Property Port -EQ 443).Thumbprint
+
+# Export the old certificate so we can get the private key from it
+Export-PfxCertificate -cert cert:\localMachine\my\$OldThumbprint -FilePath "$WorkingFolder\$CurrentPFXFile" -Password $password 
+
+# Export the private key from the old certificate
+export-privatekey "$WorkingFolder\$PrivateKey" "$WorkingFolder\$PrivateKeyFile"  -StorePassword $password 
+
+# Convert the PEM cert to PFX using the private key from the old cert
+openssl pkcs12 -export -out "$WorkingFolder\$RenewedPFXFile" -inkey "$WorkingFolder\$PrivateKeyFile" -in "$WorkingFolder\$RenewedCRTFile" 
+
+# Import the PFX cert into the certificate store
+$newCert = import-pfxcertificate -filepath "$WorkingFolder\$RenewedPFXFile" -certstorelocation cert:\LocalMachine\my -password $password 
+
+# Update IIS site on https protocol to use the new cert
+(Get-WebBinding -Protocol "https").AddSslCertificate($newCert.Thumbprint, "my")
