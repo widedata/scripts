@@ -1,10 +1,14 @@
+Param($User,
+$FolderPath
+) 
+
 function Get-UserFolderAccess
 {
     [CmdletBinding()]
     param
     (
         [Parameter(ValueFromPipeline)]
-        $user,
+        $User,
 
         [Parameter()]
         $FolderPath
@@ -29,4 +33,4 @@ function Get-UserFolderAccess
     }
 }
 
-Get-UserFolderAccess "wdcadmin" "C:\temp"
+Get-UserFolderAccess $User $FolderPath
