@@ -17,7 +17,8 @@ function Get-UserFolderAccess
     Process
     {
         $NTDomain = (gwmi Win32_NTDomain).DomainName
-        $groups = Get-ADPrincipalGroupMembership $user
+        $memberships = Get-ADPrincipalGroupMembership $user
+        $memberships += Get-ADUser $user
         $RootFolder = Get-ChildItem -Directory -Path $FolderPath -Recurse -Force
         $Output = @()
         ForEach ($Folder in $RootFolder) {
@@ -28,7 +29,7 @@ function Get-UserFolderAccess
         }
         }
 
-        $output | where-object { $_.IDRef -in $groups.name } | select-object name,inherited | format-table -autosize
+        $output | where-object { $_.IDRef -in $memberships.SamAccountName } | select-object name,inherited,IDRef | format-table -autosize
         
     }
 }
