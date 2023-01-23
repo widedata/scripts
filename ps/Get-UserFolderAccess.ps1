@@ -1,6 +1,14 @@
-Param($User,
-$FolderPath
-) 
+param
+(
+    [Parameter(ValueFromPipeline)]
+    $User,
+
+    [Parameter()]
+    $FolderPath,
+
+    [Parameter()]
+    [switch]$GridView
+)
 
 function Get-UserFolderAccess
 {
@@ -11,7 +19,10 @@ function Get-UserFolderAccess
         $User,
 
         [Parameter()]
-        $FolderPath
+        $FolderPath,
+
+        [Parameter()]
+        [switch]$GridView
     )
 
     Process
@@ -29,9 +40,19 @@ function Get-UserFolderAccess
         }
         }
 
-        $output | where-object { $_.IDRef -in $memberships.SamAccountName } | select-object name,inherited,IDRef | format-table -autosize
-        
+        $render = $output | where-object { $_.IDRef -in $memberships.SamAccountName } | select-object Name,IDRef,Permissions,Inherited
+
+        If ($GridView) {
+            $render | Out-GridView
+        } else {
+            $render | format-table -autosize
+        }
+
     }
 }
 
-Get-UserFolderAccess $User $FolderPath
+If ($GridView) {
+    Get-UserFolderAccess $User $FolderPath -GridView
+} else {
+    Get-UserFolderAccess $User $FolderPath
+}
