@@ -3,7 +3,11 @@
 # handling the Auto Attendant but fails to be properly linked. This manually creates the link so Azure
 # can initialize the virtual
 
+# It's possible that this may be done automatically without interaction by using the command: Find-CsOnlineApplicationInstance * --UnAssociatedOnly
+# And correlating findings there with Get-CsAutoAttendant to try and determine which ones should be connected
+
 # *NOTE: This needs to be run interactively as it will prompt for credentials
+
 
 Install-Module AzureAD
 Install-Module MicrosoftTeams
@@ -14,13 +18,13 @@ Connect-MicrosoftTeams
 Write-Host "Please type the Auto-Attendant account email."
 $ResourceEmail = Read-Host '(i.e. autoattendantresource@mydomain.com)'
 Write-Host "Please type The Auto Attendant Name (not the resource name)."
-$AttendantName = '(i.e. Main Auto Attendant)'
+$AttendantName = Read-Host '(i.e. Main Auto Attendant)'
 If((Get-CSAutoAttendant -NameFilter $AttendantName).ApplicationInstances -ne "") {
     Write-Host "Application Instance not initialized. Attempting to create application association."
     $Operator = (Get-CsOnlineApplicationInstance $ResourceEmail).ObjectId
     $Attendant = (Get-CSAutoAttendant -NameFilter $AttendantName).Identity
     try {
-        Get-CsOnlineApplicationInstanceAssociation -Identities $Operator -ConfigurationId $Attendant -ConfigurationType AutoAttendant
+        New-CsOnlineApplicationInstanceAssociation -Identities $Operator -ConfigurationId $Attendant -ConfigurationType AutoAttendant
     } catch {
         Write-Host "Unable to create application association."
         Write-Host $Error[0].Exception
