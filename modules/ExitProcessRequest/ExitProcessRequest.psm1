@@ -1,4 +1,34 @@
-function Start-ExitProcessRequest {
+<#
+.SYNOPSIS
+    Displays a form to request the user to save and close a specified process. If the process is not closed within the specified time limit, it is forcibly closed.
+
+.DESCRIPTION
+    The Show-ExitProcessRequest function displays a form that requests the user to save and close a specified process. The function allows the user to continue or cancel the process closure. If the process is not closed within the specified time limit, it is forcibly closed.
+
+.PARAMETER processName
+    The name of the process to be closed.
+
+.PARAMETER timeLimit
+    The time limit in seconds for the user to save and close the process. Cannot be set below 5 seconds for the sake of usefulness. Default is 120 seconds.
+
+.PARAMETER allowCancel
+    Specifies whether the user is allowed to cancel the process closure. If this switch is present, the Cancel button will be enabled.
+
+.PARAMETER logoPath
+    The path to the logo image file to be displayed in the form. If not specified, a default logo will be used.
+
+.PARAMETER logoUrl
+    The URL of the logo image file to be displayed in the form. If both logoPath and logoUrl are specified, logoPath will be used and logoUrl will be ignored.
+
+.PARAMETER displayName
+    The display name of the process. This will be shown in the form. Default is the same as the processName.
+
+.EXAMPLE
+    Show-ExitProcessRequest -processName "Notepad" -timeLimit 60 -allowCancel -logoPath "C:\Images\logo.png"
+    This example displays a form requesting the user to save and close the Notepad
+#>
+
+function Show-ExitProcessRequest {
     param(
         [Parameter(Mandatory=$true)]
         [string]$processName,
@@ -23,10 +53,9 @@ function Start-ExitProcessRequest {
 
     #Before we do anything, lets see if we even need to bother the user
     if($null -eq (Get-Process "$processName" -ErrorAction SilentlyContinue).HandleCount) {
-        Write-Host "No processes found for $displayName. Exiting."
+        Write-Output "No processes found for $displayName. Exiting."
         return
     }
-
 
     if ($logoPath -and $logoUrl) {
         Write-Warning "Both logoPath and logoUrl were specified. Using logoPath."
@@ -34,6 +63,11 @@ function Start-ExitProcessRequest {
     } elseif ($logoPath -eq "" -and $logoUrl -eq "") {
         Write-Warning "Neither logoPath nor logoUrl were specified. Using default logo."
         $logoPath = "$PSScriptRoot\default.png"
+    }
+
+    if ($timeLimit -lt 5) {
+        Write-Warning "Time limit is less than 5 seconds. Setting to 5 seconds."
+        $timeLimit = 5
     }
 
     #Create a new Form
@@ -158,7 +192,7 @@ function Start-ExitProcessRequest {
 
     #Before we do anything, lets see if we even need to bother the user
     if($null -eq (Get-Process "$processName" -ErrorAction SilentlyContinue).HandleCount) {
-        Write-Host "No processes found for $processName. Exiting."
+        Write-Output "No processes found for $processName. Exiting."
         return
     }
 
@@ -220,4 +254,4 @@ function Start-ExitProcessRequest {
     }
 }
 
-Export-ModuleMember -Function Start-ExitProcessRequest
+Export-ModuleMember -Function Show-ExitProcessRequest
