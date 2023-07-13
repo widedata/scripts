@@ -30,7 +30,7 @@
 
 function Show-ExitProcessRequest {
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory=$false)]
         [string]$processName,
 
         [Parameter(Mandatory=$false)]
@@ -46,15 +46,31 @@ function Show-ExitProcessRequest {
         [string]$logoUrl,
 
         [Parameter(Mandatory=$false)]
-        [string]$displayName = $processName
+        [string]$displayName
     )
 
     Add-Type -AssemblyName System.Windows.Forms
 
-    #Before we do anything, lets see if we even need to bother the user
-    if($null -eq (Get-Process "$processName" -ErrorAction SilentlyContinue).HandleCount) {
-        Write-Output "No processes found for $displayName. Exiting."
+    # Lets validate the parameters
+    if ($processName -and -not $displayName) {
+        ## Handle processName without displayName
+        $displayName = $processName
+    }
+    elseif ($displayName -and -not $processName) {
+        ## Handle displayName without processName
+    }
+    elseif (-not $processName -and -not $displayName) {
+        ## Handle without displayName or processName
+        Write-Error "Please provide either a process or display name."
         return
+    }
+
+    if($processName) {
+        #Before we do anything, lets see if we even need to bother the user
+        if($null -eq (Get-Process "$processName" -ErrorAction SilentlyContinue).HandleCount) {
+            Write-Output "No processes found for $displayName. Exiting."
+            return
+        }
     }
 
     if ($logoPath -and $logoUrl) {
@@ -189,14 +205,6 @@ function Show-ExitProcessRequest {
         }
     })
 
-
-    #Before we do anything, lets see if we even need to bother the user
-    if($null -eq (Get-Process "$processName" -ErrorAction SilentlyContinue).HandleCount) {
-        Write-Output "No processes found for $processName. Exiting."
-        return
-    }
-
-
     if ([Environment]::UserInteractive) {
         # This is an interactive session, so we display the form and start the timer
 
@@ -216,6 +224,9 @@ function Show-ExitProcessRequest {
             }
 
             "Continue" {
+                if($processName) {
+                    # A process name was specified, so we check to see if it is still running
+                
                     If((Get-Process "$processName" -ErrorAction SilentlyContinue).HandleCount -gt 0) {
                         Get-Process "$processName" | Stop-Process -Force
                         Write-Output "User clicked continue."
@@ -224,6 +235,10 @@ function Show-ExitProcessRequest {
                         Write-Output "User clicked continue."
                         Write-Output "No process with the name $processName was found."
                     }
+                } else {
+                    # No process name was specified, so we just continue
+                    Write-Output "User clicked continue."
+                }
             }
             
             "Closed" {
@@ -231,13 +246,20 @@ function Show-ExitProcessRequest {
             }
             
             "Time's up" { 
-                Write-Output "Time for $displayName to be closed."
+                if ($processName) {
+                    # A process name was specified, so we check to see if it is still running
 
-                If((Get-Process "$processName" -ErrorAction SilentlyContinue).HandleCount -gt 0) {
-                    Get-Process "$processName" | Stop-Process -Force
-                }
-                else {
-                    Write-Output "No process with the name $processName was found."
+                    Write-Output "Time for $displayName to be closed."
+
+                    If((Get-Process "$processName" -ErrorAction SilentlyContinue).HandleCount -gt 0) {
+                        Get-Process "$processName" | Stop-Process -Force
+                    }
+                    else {
+                        Write-Output "No process with the name $processName was found."
+                    }
+                } else {
+                    # No process name was specified, so we just continue
+                    Write-Output "No process specified so time is just up."
                 }
             }
         }
@@ -248,9 +270,12 @@ function Show-ExitProcessRequest {
         $form.Dispose()
     } else {
         # This is a non-interactive session, so we skip the form and timer and just stop the process
-
-        Stop-Process -Name $processName -Force
-        Write-Output "Non-interactive session, $processName was forcibly closed"        
+        if($processName) {
+            Stop-Process -Name $processName -Force
+            Write-Output "Non-interactive session, $processName was forcibly closed"
+        } else {
+            Write-Output "Non-interactive session, no process specified. What are we even doing here?! lol"
+        }
     }
 }
 
