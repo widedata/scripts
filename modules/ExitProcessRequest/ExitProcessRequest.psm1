@@ -270,7 +270,7 @@ function Show-ExitProcessRequest {
         $form.Dispose()
     } else {
         # This is a non-interactive session, so we skip the form and timer and just stop the process
-        if($processName) {
+        if($processName -ne "" -AND $null -ne $processName) {
             Stop-Process -Name $processName -Force
             Write-Output "Non-interactive session, $processName was forcibly closed"
         } else {
