@@ -21,42 +21,33 @@ function Uninstall-GlobalVPNClient {
     Get-Process | Where-Object { $_.ProcessName -like "SWGVC*" } | Stop-Process -Force
 
     # Path to the registry location for uninstall commands
-    $registryPath = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall', 'HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall'
+    [String[]]$regs = "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall"
+    $regs += "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+    
+    $Installs = Get-ChildItem -LiteralPath $regs | where-object { $_.GetValue("DisplayName") -eq "Global VPN Client"}
 
-    # Loop through both 32-bit and 64-bit registry paths
-    foreach ($path in $registryPath) {
-        # Get all subkeys
-        $keys = Get-ChildItem -LiteralPath $path
-
-        # Loop through each subkey and check for the application name
-        foreach ($key in $keys) {
-            $keyName = $key.PSChildName
-
-            try {
-                $displayName = Get-ItemPropertyValue -Path "$path\$keyName" -Name 'DisplayName'
-            } catch {
-                $displayName = $null
+    If($Installs.Count -eq 1) {
+        if ($Installs.GetValue("UninstallString")) {
+            if($Installs.GetValue("UninstallString").Contains("MsiExec.exe /X")) {
+                $ProductCode = $Installs.GetValue("UninstallString").Replace("MsiExec.exe /X","")
+                $cmdArgs = "/x `"$ProductCode`" /qn /norestart /log `"C:\temp\GVC_Uninstall.log`" REMOVE_RCF=1 REMOVE_MAC=1"
+                Start-Process "C:\Windows\System32\msiexec.exe" -ArgumentList $cmdArgs
+            } else {
+                Write-Error "No MSIEXEC UninstallString Found"
+                exit 1
             }
-
-            if ($displayName -eq "Global VPN Client") {
-
-                try {
-                    $uninstallString = Get-ItemPropertyValue -Path "$path\$keyName" -Name 'UninstallString'
-                } catch {
-                    $uninstallString = $null
-                }
-
-                if ($uninstallString) {
-                    Write-Host "Found uninstall command for Global VPN Client. Executing uninstallation..."
-                    Start-Process cmd -ArgumentList "/c $uninstallString" -Wait
-                    Write-Host "Uninstallation command executed."
-                } else {
-                    Write-Host "Uninstall command not found for Global VPN Client."
-                }
-                break
-            }
+        } else {
+            Write-Host "Uninstall command not found for Global VPN Client."
         }
+
+    } elseif ($Installs.Count -gt 1) {
+        Write-Error "Multiple Installations Located."
+    } elseif ($Installs.Count -eq 0) {
+        Write-Output "No Installations Found."
+        exit
     }
+
+
 }
 
 Uninstall-GlobalVPNClient
