@@ -1,0 +1,131 @@
+<Objs Version="1.1.0.1" xmlns="http://schemas.microsoft.com/powershell/2004/04">
+  <Obj RefId="0">
+    <TN RefId="0">
+      <T>Microsoft.PowerShell.Commands.PSRepositoryItemInfo</T>
+      <T>System.Management.Automation.PSCustomObject</T>
+      <T>System.Object</T>
+    </TN>
+    <MS>
+      <S N="Name">7zipWrapper</S>
+      <S N="Version">0.1.39</S>
+      <S N="Type">Module</S>
+      <S N="Description">Powershell module for creating and extracting 7-Zip archives.  Password Support and pipeline support included</S>
+      <S N="Author">David Tawater</S>
+      <S N="CompanyName">taalmahret</S>
+      <S N="Copyright">(c) 2021 David Tawater. All rights reserved.</S>
+      <DT N="PublishedDate">2021-08-08T07:21:05-04:00</DT>
+      <Nil N="InstalledDate" />
+      <Nil N="UpdatedDate" />
+      <Nil N="LicenseUri" />
+      <Nil N="ProjectUri" />
+      <Nil N="IconUri" />
+      <Obj N="Tags" RefId="1">
+        <TN RefId="1">
+          <T>System.Object[]</T>
+          <T>System.Array</T>
+          <T>System.Object</T>
+        </TN>
+        <LST>
+          <S>PSModule</S>
+        </LST>
+      </Obj>
+      <Obj N="Includes" RefId="2">
+        <TN RefId="2">
+          <T>System.Collections.Hashtable</T>
+          <T>System.Object</T>
+        </TN>
+        <DCT>
+          <En>
+            <S N="Key">Cmdlet</S>
+            <Obj N="Value" RefId="3">
+              <TNRef RefId="1" />
+              <LST />
+            </Obj>
+          </En>
+          <En>
+            <S N="Key">DscResource</S>
+            <Ref N="Value" RefId="3" />
+          </En>
+          <En>
+            <S N="Key">Command</S>
+            <Obj N="Value" RefId="4">
+              <TNRef RefId="1" />
+              <LST>
+                <S>Add-7zArchive</S>
+                <S>Expand-7zArchive</S>
+                <S>Get-7zArchive</S>
+                <S>New-7zArchive</S>
+                <S>New-7zSFX</S>
+                <S>Test-7zArchive</S>
+                <S>Update-7zArchive</S>
+              </LST>
+            </Obj>
+          </En>
+          <En>
+            <S N="Key">RoleCapability</S>
+            <Ref N="Value" RefId="3" />
+          </En>
+          <En>
+            <S N="Key">Workflow</S>
+            <Ref N="Value" RefId="3" />
+          </En>
+          <En>
+            <S N="Key">Function</S>
+            <Obj N="Value" RefId="5">
+              <TNRef RefId="1" />
+              <LST>
+                <S>Add-7zArchive</S>
+                <S>Expand-7zArchive</S>
+                <S>Get-7zArchive</S>
+                <S>New-7zArchive</S>
+                <S>New-7zSFX</S>
+                <S>Test-7zArchive</S>
+                <S>Update-7zArchive</S>
+              </LST>
+            </Obj>
+          </En>
+        </DCT>
+      </Obj>
+      <Nil N="PowerShellGetFormatVersion" />
+      <S N="ReleaseNotes"># Release Notes_x000D__x000A__x000D__x000A_This file will be very similiar to the change log until i generate_x000D__x000A_a working release notes generator in powershell_x000D__x000A__x000D__x000A_The format is based on [Keep a Changelog](http://keepachangelog.com/)_x000D__x000A_and this project adheres to [Semantic Versioning](http://semver.org/)._x000D__x000A__x000D__x000A_Example Subject Categories to use_x000D__x000A_Added      - New features_x000D__x000A_Changed    - Existing functionality and features changed_x000D__x000A_Deprecated - Features soon-to-be removed._x000D__x000A_Removed    - Features now removed._x000D__x000A_Fixed      - Bug fixes and repairs._x000D__x000A_Security   - Vulnerability fixes and repairs_x000D__x000A__x000D__x000A_## [0.1.8] Unreleased_x000D__x000A__x000D__x000A_This includes build and test fixes to design the builder workflow_x000D__x000A__x000D__x000A_## [0.1.0] 2021-08-04_x000D__x000A__x000D__x000A_This is the initial version of the module</S>
+      <Obj N="Dependencies" RefId="6">
+        <TNRef RefId="1" />
+        <LST />
+      </Obj>
+      <S N="RepositorySourceLocation">https://www.powershellgallery.com/api/v2</S>
+      <S N="Repository">PSGallery</S>
+      <S N="PackageManagementProvider">NuGet</S>
+      <Obj N="AdditionalMetadata" RefId="7">
+        <TN RefId="3">
+          <T>System.Management.Automation.PSCustomObject</T>
+          <T>System.Object</T>
+        </TN>
+        <MS>
+          <S N="copyright">(c) 2021 David Tawater. All rights reserved.</S>
+          <S N="description">Powershell module for creating and extracting 7-Zip archives.  Password Support and pipeline support included</S>
+          <S N="requireLicenseAcceptance">False</S>
+          <S N="releaseNotes"># Release Notes_x000D__x000A__x000D__x000A_This file will be very similiar to the change log until i generate_x000D__x000A_a working release notes generator in powershell_x000D__x000A__x000D__x000A_The format is based on [Keep a Changelog](http://keepachangelog.com/)_x000D__x000A_and this project adheres to [Semantic Versioning](http://semver.org/)._x000D__x000A__x000D__x000A_Example Subject Categories to use_x000D__x000A_Added      - New features_x000D__x000A_Changed    - Existing functionality and features changed_x000D__x000A_Deprecated - Features soon-to-be removed._x000D__x000A_Removed    - Features now removed._x000D__x000A_Fixed      - Bug fixes and repairs._x000D__x000A_Security   - Vulnerability fixes and repairs_x000D__x000A__x000D__x000A_## [0.1.8] Unreleased_x000D__x000A__x000D__x000A_This includes build and test fixes to design the builder workflow_x000D__x000A__x000D__x000A_## [0.1.0] 2021-08-04_x000D__x000A__x000D__x000A_This is the initial version of the module</S>
+          <S N="isLatestVersion">True</S>
+          <S N="isAbsoluteLatestVersion">True</S>
+          <S N="versionDownloadCount">478</S>
+          <S N="downloadCount">478</S>
+          <S N="packageSize">27258</S>
+          <S N="published">8/8/2021 7:21:05 AM -04:00</S>
+          <S N="created">8/8/2021 7:21:05 AM -04:00</S>
+          <S N="lastUpdated">10/11/2023 7:21:37 PM -04:00</S>
+          <S N="tags">PSModule PSFunction_Add-7zArchive PSCommand_Add-7zArchive PSFunction_Expand-7zArchive PSCommand_Expand-7zArchive PSFunction_Get-7zArchive PSCommand_Get-7zArchive PSFunction_New-7zArchive PSCommand_New-7zArchive PSFunction_New-7zSFX PSCommand_New-7zSFX PSFunction_Test-7zArchive PSCommand_Test-7zArchive PSFunction_Update-7zArchive PSCommand_Update-7zArchive PSIncludes_Function</S>
+          <S N="developmentDependency">False</S>
+          <S N="updated">2023-10-11T19:21:37Z</S>
+          <S N="NormalizedVersion">0.1.39</S>
+          <S N="Authors">David Tawater</S>
+          <S N="IsPrerelease">false</S>
+          <S N="ItemType">Module</S>
+          <S N="FileList">7zipWrapper.nuspec|7zipWrapper.psd1|7zipWrapper.psm1|Classes\SevenZipException.ps1|en-US\7zipWrapper-help.xml|en-US\about_7zipWrapper.help.help.txt|Private\Debug-ThrowException.ps1|Private\Get-CurrentFileName.ps1|Private\Get-CurrentLineNumber.ps1|Private\Initialize-Module.ps1|Private\Invoke-7zInterop.ps1|Public\Add-7zArchive.ps1|Public\Expand-7zArchive.ps1|Public\Get-7zArchive.ps1|Public\New-7zArchive.ps1|Public\New-7zSFX.ps1|Public\Test-7zArchive.ps1|Public\Update-7zArchive.ps1</S>
+          <S N="GUID">98351fbb-4702-4dc8-aab6-d22d50d7c026</S>
+          <S N="CompanyName">Unknown</S>
+        </MS>
+      </Obj>
+      <S N="InstalledLocation">C:\temp\NXDeploy\modules\7zipWrapper\0.1.39</S>
+    </MS>
+  </Obj>
+</Objs>
