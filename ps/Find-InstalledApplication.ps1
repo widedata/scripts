@@ -50,7 +50,7 @@ function Find-InstalledApplication {
     $results = @()
 
     # Mount HKU as a PSDrive if not already mounted
-    if (-not (Get-PSDrive -Name HKU)) {
+    if (-not (Get-PSDrive -Name HKU -ErrorAction SilentlyContinue)) {
         New-PSDrive -Name HKU -PSProvider Registry -Root HKEY_USERS | Out-Null
     }
 
