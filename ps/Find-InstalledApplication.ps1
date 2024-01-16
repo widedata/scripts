@@ -71,13 +71,13 @@ function Find-InstalledApplication {
     # Search in HKLM
     foreach ($path in $regPaths) {
         if($Exact) {
-                Get-ItemProperty -Path $path -ErrorAction Continue | 
+                Get-ItemProperty -Path $path -ErrorAction SilentlyContinue | 
                 Where-Object { $_.DisplayName -eq "$AppName" } | 
                 ForEach-Object {
                     $_ | Add-Member -MemberType NoteProperty -Name "Scope" -Value "Machine" -PassThru
                 } | ForEach-Object { $results += $_ }
         } else {
-                Get-ItemProperty -Path $path -ErrorAction Continue | 
+                Get-ItemProperty -Path $path -ErrorAction SilentlyContinue | 
                 Where-Object { $_.DisplayName -like "*$AppName*" } | 
                 ForEach-Object {
                     $_ | Add-Member -MemberType NoteProperty -Name "Scope" -Value "Machine" -PassThru
