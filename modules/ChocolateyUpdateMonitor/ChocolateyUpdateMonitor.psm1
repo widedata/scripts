@@ -20,6 +20,8 @@ function Get-ChocoMonitorConfig {
     if (-NOT(Test-Path "$env:ProgramData\ChocoUpdateMonitor\settings.json")) {
         Write-Verbose "No settings file found. Generating default settings..."
 
+        New-Item -Path "$env:ProgramData\ChocoUpdateMonitor" -Type Directory
+
         $defaultSettings = @{
             UseRocolatey           = Test-Path (Get-Command roco).Path
             AppIcon                = 'https://wdc.help/icons/Box.Packed.ico'
