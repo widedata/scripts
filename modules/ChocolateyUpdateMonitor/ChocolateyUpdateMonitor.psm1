@@ -95,8 +95,9 @@ function Get-ChocolateyUpdate {
         $sourceNamesToDisable | ForEach-Object { choco source disable -n $_ }
 
         try {
-            $outdatedPackages = roco outdated -r |
-                ConvertFrom-Csv -Delimiter '|' -Header 'Name', 'CurrentVersion', 'AvailableVersion', 'Pinned'
+            $outdatedPackages = roco outdated -r | ConvertFrom-Csv -Delimiter '|' -Header 'Name', 'CurrentVersion', 'AvailableVersion', 'Pinned'
+            $outdatedPackage | add-member -NotePropertyName Source -NotePropertyValue $thisChocoSource.SourceURL
+            $outdatedPackages += $outdatedPackage
         } catch {
             Write-Verbose "There was a problem running Rocolatey."
         }finally {
