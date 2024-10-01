@@ -17,6 +17,11 @@ function Get-ChocoMonitorConfig {
 
     Write-Verbose "Loading Chocolatey Update Monitor settings"
 
+    if (-NOT(Test-Path "$env:ProgramData\ChocoUpdateMonitor")) {
+        Write-Verbose "No settings folder found. Generating default folder..."
+		
+		New-Item -Path "$env:ProgramData\ChocoUpdateMonitor" -Type Directory
+
     if (-NOT(Test-Path "$env:ProgramData\ChocoUpdateMonitor\settings.json")) {
         Write-Verbose "No settings file found. Generating default settings..."
 
