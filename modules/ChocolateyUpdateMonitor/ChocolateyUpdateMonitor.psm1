@@ -21,7 +21,7 @@ function Get-ChocoMonitorConfig {
         Write-Verbose "No settings file found. Generating default settings..."
 
         $defaultSettings = @{
-            UseRocolatey           = Test-Path "${env:ProgramFiles}\Rocolatey"
+            UseRocolatey           = Test-Path (Get-Command roco).Path
             AppIcon                = 'https://wdc.help/icons/Box.Packed.ico'
             ChocoSources           = @()
             AppTitle               = 'Chocolatey Update Monitor'
@@ -29,7 +29,7 @@ function Get-ChocoMonitorConfig {
             UpdateNotifyWebhookURL = ""
         }
 
-        $chocoSources = choco source list -r | 
+        $chocoSources = choco source list -r |
             ConvertFrom-Csv -Header 'SourceName', 'SourceUrl', 'disabled', 'Username', 'Password', 'Priority', 'BypassProxy', 'SelfService', 'AdminOnly' -delimiter '|' |
             Where-Object disabled -ne $true | # Exclude disabled sources
             Select-Object @{Name='SourceName'; Expression={$_.SourceName}}, @{Name='SourceUrl'; Expression={$_.SourceUrl}}
@@ -83,7 +83,7 @@ function Get-ChocolateyUpdate {
                 if ($request.StatusCode -ne 200) {
                     Write-Verbose "Skipping source $($thisChocoSource.SourceURL) as it's not online."
                     $sourceNamesToDisable += $thisChocoSource.SourceName
-                }    
+                }
             } catch {
                 Write-Verbose "There was a problem connecting to $($thisChocoSource.SourceURL)."
             }
@@ -95,7 +95,7 @@ function Get-ChocolateyUpdate {
         $sourceNamesToDisable | ForEach-Object { choco source disable -n $_ }
 
         try {
-            $outdatedPackages = roco outdated -r | 
+            $outdatedPackages = roco outdated -r |
                 ConvertFrom-Csv -Delimiter '|' -Header 'Name', 'CurrentVersion', 'AvailableVersion', 'Pinned'
         } catch {
             Write-Verbose "There was a problem running Rocolatey."
@@ -118,7 +118,7 @@ function Get-ChocolateyUpdate {
                     $outdatedPackages += $outdatedPackage
                 } else {
                     Write-Verbose "Skipping source $($source.SourceURL) as it's not online."
-                }    
+                }
             } catch {
                 Write-Verbose "There was a problem connecting to $($source.SourceURL)."
             }
@@ -275,7 +275,7 @@ function Register-ChocoMonitorTask {
     Unregisters the scheduled task for checking Chocolatey package updates.
 
 .DESCRIPTION
-    The Unregister-ChocoMonitorTask function removes the scheduled task named "Chocolatey Update Monitor". 
+    The Unregister-ChocoMonitorTask function removes the scheduled task named "Chocolatey Update Monitor".
 
 .EXAMPLE
     Unregister-ChocoMonitorTask
@@ -287,7 +287,7 @@ function Unregister-ChocoMonitorTask {
     param()
 
     $TaskName = 'ChocolateyUpdateMonitor'
-    
+
     try {
         Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false
         Write-Verbose "Successfully removed the scheduled task: $TaskName"
@@ -344,9 +344,9 @@ function Set-ChocoMonitorConfig {
         [Parameter(Mandatory=$false)]
         [string]$UpdateCheckInterval
     )
-    
+
     $settingsFile = "$env:ProgramData\ChocoUpdateMonitor\settings.json"
-    
+
     if (Test-Path $settingsFile) {
         $currentSettings = Get-Content $settingsFile | ConvertFrom-Json
     }
@@ -381,7 +381,7 @@ function Set-ChocoMonitorConfig {
         Write-Verbose "Settings updated"
     }
 
-    
+
     if ($UpdateCheckInterval -ne $currentSettings.UpdateCheckInterval) {
         if ($WhatIfPreference.IsPresent) {
             Write-Output "WhatIf is enabled. Would have updated the scheduled task"
